@@ -1,0 +1,2 @@
+# gomake
+make for go
