@@ -1,0 +1,30 @@
+main-class: goprojector
+
+license: https://www.apache.org/licenses/LICENSE-2.0
+author: 
+url:
+repo:
+
+version:
+  major: 0
+  minor: 1
+  build: 0
+
+compiler:
+  default: /usr/local/go/bin/go
+#  1.8: /usr/local/go/bin/go-1.8
+
+#os: all
+#arch: amd64
+
+dependencies:
+  stable:
+#    github.com/something/golib-1.2
+#  current:
+#    github.com/something/golib-current
+
+
+configuration:
+  debug:
+  release:
+  test:
