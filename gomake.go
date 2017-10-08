@@ -48,7 +48,7 @@ func loadMakefile() {
 	scanner.Split(bufio.ScanLines)
 		
 	for scanner.Scan() {
-		if strings.Contains(scanner.Text(), "#") == true {
+		if strings.Contains(scanner.Text(), "#") != true {
 			fmt.Println(scanner.Text())
 		}
 	
