@@ -12,17 +12,21 @@ import (
 	"runtime"
 )
 
+var makefile = "Gomakefile.json"
+
 
 func main() {
 	major:= 0
 	minor:= 1
 	build:= "07102017"
 
+
+
 	var version = fmt.Sprintf("%d.%d.%s", major, minor, build)
 	fmt.Printf("gomake version %s \n", version)
 
 	//check for existence of Gomakefile.yml
-	if _, err:= os.Stat("Gomakefile.yml");  ! os.IsNotExist(err) {
+	if _, err:= os.Stat(makefile);  ! os.IsNotExist(err) {
 		fmt.Println("found makefile...                   OK")
 	}else {
 		fmt.Println("makefile NOT FOUND...            ERROR")
@@ -41,15 +45,23 @@ func main() {
 
 func loadMakefile() {
 	fmt.Println("reading Makefile..")
-
-	inFile, _:= os.Open("Gomakefile.yml")
+	//fmt.Printf("working dir is %s", os.Getwd())
+	inFile, _:= os.Open(makefile)
 	defer inFile.Close()
 	scanner:= bufio.NewScanner(inFile)
 	scanner.Split(bufio.ScanLines)
 		
 	for scanner.Scan() {
-		if strings.Contains(scanner.Text(), "#") != true {
-			fmt.Println(scanner.Text())
+		if strings.Contains(scanner.Text(), ":") == true {
+
+			s := strings.Split(scanner.Text(), ":")
+			if strings.Contains(s[1], "{") == true {
+				//fmt.Println("GROUP -> ",s[0])
+			} else {
+				//param, value := s[0], s[1]
+				//fmt.Println(param, "...",value)
+			}		
+			
 		}
 	
 		
