@@ -10,28 +10,51 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+	"flag"
 )
 
 var makefile = "Gomakefile.json"
 
+type Makefile struct {
+	target_binary string
+	license string
+	author string
+	url string
+	repo string
+	version struct {
+		major int
+		minor int
+		build int
+	}
+    compiler struct {
+		name string
+		path string
+	}
+	dependencies struct {
+		url string
+	}
+	build_configuration struct {
+		name string
+		description string
+		flags []string
+	}
+}
+
+
 
 func main() {
+
 	major:= 0
 	minor:= 1
 	build:= "07102017"
-
-
+	
+	processArgs()
+	
 
 	var version = fmt.Sprintf("%d.%d.%s", major, minor, build)
 	fmt.Printf("gomake version %s \n", version)
 
-	//check for existence of Gomakefile.yml
-	if _, err:= os.Stat(makefile);  ! os.IsNotExist(err) {
-		fmt.Println("found makefile...                   OK")
-	}else {
-		fmt.Println("makefile NOT FOUND...            ERROR")
-		return; 
-	}
+	checkMakefileExists()
 
 	loadMakefile()
 
@@ -41,6 +64,27 @@ func main() {
 	}
 
 	//buildProgram()
+}
+
+func processArgs() {
+	compiler_flag := flag.String("compiler", "default", "choose compiler version")
+	configuration_flag := flag.String("configuration", "release_patch", "choose configuration")
+	//numbPtr := flag.Int("configuration", 42, "an int")
+	//boolPtr := flag.Bool("fork", false, "a bool")
+	flag.Parse()
+
+	fmt.Println("compiler:", *compiler_flag)
+	fmt.Println("configuration_flag:", *configuration_flag)
+}
+
+func checkMakefileExists(){
+		//check for existence of Gomakefile.yml
+		if _, err:= os.Stat(makefile);  ! os.IsNotExist(err) {
+			fmt.Println("found makefile...                   OK")
+		}else {
+			fmt.Println("makefile NOT FOUND...            ERROR")
+			return; 
+		}
 }
 
 func loadMakefile() {
