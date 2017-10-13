@@ -15,13 +15,14 @@ import (
 
 var makefile = "Gomakefile.json"
 
+//Makefile struct represents makefile itself
 type Makefile struct {
-	target_binary string
-	license       string
-	author        string
-	url           string
-	repo          string
-	version       struct {
+	targetBinary string
+	license      string
+	author       string
+	url          string
+	repo         string
+	version      struct {
 		major int
 		minor int
 		build int
@@ -33,7 +34,7 @@ type Makefile struct {
 	dependencies struct {
 		url string
 	}
-	build_configuration struct {
+	buildConfiguration struct {
 		name        string
 		description string
 		flags       []string
