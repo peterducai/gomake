@@ -11,6 +11,7 @@ import (
 	"os/exec"
 	"runtime"
 	"strings"
+	"time"
 )
 
 var makefile = "Gomakefile.json"
@@ -61,6 +62,10 @@ type Makefile struct {
 // console.log("title: " + Foo.title);
 
 func main() {
+
+	//caution : format string is `2006-01-02 15:04:05.000000000`
+	current := time.Now()
+	fmt.Println("new build: ", current.Format("20060102150405"))
 
 	major := 0
 	minor := 1
