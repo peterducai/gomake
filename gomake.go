@@ -11,7 +11,6 @@ import (
 	"os/exec"
 	"runtime"
 	"strings"
-	"time"
 )
 
 var makefile = "Gomakefile.json"
@@ -29,15 +28,15 @@ type Makefile struct {
 		build int
 	}
 	compiler struct {
-		name string
-		path string
+		name []string
+		path []string
 	}
 	dependencies struct {
-		url string
+		url []string
 	}
 	buildConfiguration struct {
-		name        string
-		description string
+		name        []string
+		description []string
 		flags       []string
 	}
 }
@@ -64,17 +63,21 @@ type Makefile struct {
 func main() {
 
 	//caution : format string is `2006-01-02 15:04:05.000000000`
-	current := time.Now()
-	fmt.Println("new build: ", current.Format("20060102150405"))
+	//current := time.Now()
+	//fmt.Println("new build: ", current.Format("20060102150405"))
 
 	major := 0
 	minor := 1
 	build := "07102017"
 
-	processArgs()
-
+	fmt.Println("--------------------------------")
+	fmt.Println("- GOMAKE builder and generator -")
+	fmt.Println("--------------------------------")
 	var version = fmt.Sprintf("%d.%d.%s", major, minor, build)
 	fmt.Printf("gomake version %s \n", version)
+	fmt.Println("-----------------------")
+
+	processArgs()
 
 	checkMakefileExists()
 
