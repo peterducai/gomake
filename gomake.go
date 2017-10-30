@@ -9,11 +9,10 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"runtime"
 	"strings"
 )
 
-var makefile = "Gomakefile.json"
+var makefile = "makefile2go.json"
 
 //Makefile struct represents makefile itself
 type Makefile struct {
@@ -72,19 +71,13 @@ func main() {
 
 	fmt.Println("--------------------------------")
 	fmt.Println("- GOMAKE builder and generator -")
+	var version = fmt.Sprintf("%d.%d.%s         -", major, minor, build)
+	fmt.Printf("- version %s \n", version)
 	fmt.Println("--------------------------------")
-	var version = fmt.Sprintf("%d.%d.%s", major, minor, build)
-	fmt.Printf("gomake version %s \n", version)
-	fmt.Println("-----------------------")
 
 	processArgs()
-
+	fmt.Println("-----------------------")
 	checkMakefileExists()
-
-	//if on windows, we want .exe extension
-	if runtime.GOOS == "windows" {
-		//BINOUTPUT = BINOUTPUT + ".exe"
-	}
 
 	//buildProgram()
 
@@ -118,10 +111,16 @@ func initProj() {
 	//reading a string
 	reader := bufio.NewReader(os.Stdin)
 	var name string
+
+	fmt.Println("--------------------------------")
 	fmt.Println("Project name:")
 	name, _ = reader.ReadString('\n')
 
-	fmt.Println("Your name is ", name)
+	fmt.Print("creating project ", name)
+	//create dir
+	//cd dir
+	//generate makefile2go.json
+	fmt.Println("--------------------------------")
 }
 
 func loadMakefile() {
@@ -151,17 +150,24 @@ func loadMakefile() {
 
 func buildProgram() {
 	//go build [-o output] [-i] [build flags] [packages]
-	cmd := exec.Command("go", "build", "-o", "gomake.bin", "gomake.go")
+	cmd := exec.Command("go", "build", "gomake.go")
 	log.Printf("Running command and waiting for it to finish...")
 	err := cmd.Run()
 	log.Printf("Command finished with error: %v", err)
 }
 
+// clean binaries
 func clean() {
 
 }
 
+//test is to run all _test files
 func test() {
+
+}
+
+// raiseBuildNum
+func raiseBuildNum() {
 
 }
 
