@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"crypto/sha256"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
@@ -39,7 +40,7 @@ type Makefile struct {
 		description []string `json:"description"`
 		flags       []string `json:"sourflagsceDir"`
 	}
-	artifacts struct {
+	artifacts struct { //file should be artifacts_$BINARY_$BUILD_NUM.json
 		save      bool `json:"save"`
 		overwrite bool `json:"overwrite"`
 	}
@@ -127,12 +128,14 @@ func initProj() {
 	//generate makefile2go.json
 	fmt.Println("--------------------------------")
 
-	user := &Makefile{sourceDir: "Frank", version: [{major: "45"}]}
+	mk := Makefile{url: "sjflasjdfsdfj"}
+	data, err := json.Marshal(mk)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Oh no! There was an error:", err)
 		return
 	}
-	fmt.Println(string(b))
+
+	fmt.Println(string(data))
 }
 
 func loadMakefile() {
