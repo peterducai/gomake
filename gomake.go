@@ -16,27 +16,32 @@ var makefile = "makefile2go.json"
 
 //Makefile struct represents makefile itself
 type Makefile struct {
-	targetBinary string
-	license      string
-	author       string
-	url          string
-	repo         string
+	sourceDir    string `json:"sourcedir"`
+	targetBinary string `json:"targetbinary"`
+	license      string `json:"license"`
+	author       string `json:"author"`
+	url          string `json:"url"`
+	repo         string `json:"repo"`
 	version      struct {
-		major int
-		minor int
-		build int
+		major int `json:"major"`
+		minor int `json:"minor"`
+		build int `json:"build"`
 	}
 	compiler struct {
-		name []string
-		path []string
+		name []string `json:"name"`
+		path []string `json:"path"`
 	}
 	dependencies struct {
-		url []string
+		url []string `json:"url"`
 	}
 	buildConfiguration struct {
-		name        []string
-		description []string
-		flags       []string
+		name        []string `json:"name"`
+		description []string `json:"description"`
+		flags       []string `json:"sourflagsceDir"`
+	}
+	artifacts struct {
+		save      bool `json:"save"`
+		overwrite bool `json:"overwrite"`
 	}
 }
 
@@ -121,6 +126,13 @@ func initProj() {
 	//cd dir
 	//generate makefile2go.json
 	fmt.Println("--------------------------------")
+
+	user := &Makefile{sourceDir: "Frank", version: [{major: "45"}]}
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(string(b))
 }
 
 func loadMakefile() {
