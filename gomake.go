@@ -15,35 +15,38 @@ import (
 
 var makefile = "makefile2go.json"
 
-//Makefile struct represents makefile itself
-type Makefile struct {
-	sourceDir    string `json:"sourcedir"`
-	targetBinary string `json:"targetbinary"`
-	license      string `json:"license"`
-	author       string `json:"author"`
-	url          string `json:"url"`
-	repo         string `json:"repo"`
-	version      struct {
-		major int `json:"major"`
-		minor int `json:"minor"`
-		build int `json:"build"`
-	}
-	compiler struct {
-		name []string `json:"name"`
-		path []string `json:"path"`
-	}
-	dependencies struct {
-		url []string `json:"url"`
-	}
-	buildConfiguration struct {
-		name        []string `json:"name"`
-		description []string `json:"description"`
-		flags       []string `json:"sourflagsceDir"`
-	}
-	artifacts struct { //file should be artifacts_$BINARY_$BUILD_NUM.json
-		save      bool `json:"save"`
-		overwrite bool `json:"overwrite"`
-	}
+//About describes software, it's author and so on
+type About struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Homepage    string `json:"homepage"`
+	Repository  string `json:"repository"`
+	Author      string `json:"author"`
+	Email       string `json:"email"`
+	License     string `json:"license"`
+	LicenseURL  string `json:"licenseurl"`
+}
+
+//Version describes version and versioning configuration
+type Version struct {
+	Major           string `json:"major"`
+	Minor           string `json:"minor"`
+	Build           string `json:"build"`
+	IncreaseVersion string `json:"increaseversion"` //increaseversion increment maj,min or build version
+}
+
+//Build describes build configuration
+type Build struct {
+	Name         string `json:"name"`
+	Description  string `json:"description"`
+	Compilerpath string `json:"compilerpath"`
+	Flags        string `json:"flags"`
+}
+
+//Dependency hold list of dependencies to download thru go get
+type Dependency struct {
+	Name string `json:"name"`
+	URL  string `json:"url"`
 }
 
 // In Go:
