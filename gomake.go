@@ -49,6 +49,14 @@ type Dependency struct {
 	URL  string `json:"url"`
 }
 
+//Makefile struct that holds whole makefile data
+type Makefile struct {
+	About
+	Version
+	Build
+	Dependency
+}
+
 // In Go:
 
 // // web server
