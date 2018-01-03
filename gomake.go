@@ -59,6 +59,15 @@ type Makefile struct {
 	Dependency
 }
 
+func getRunningDir() {
+	pwd, err := os.Getwd()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	fmt.Println(pwd)
+}
+
 func printTimezones() {
 	t := time.Now()
 
@@ -80,11 +89,12 @@ func printTimezones() {
 func main() {
 
 	current := time.Now()
+	getRunningDir()
 
 	var mk Makefile
 	mk.About.Name = "mynewproject"
 	mk.Version.Minor = "1"
-	mk.Version.Major = "1"
+	mk.Version.Major = "0"
 	mk.Version.Build = current.Format("20060102150405")
 	mk.Version.Commit = "0"
 
