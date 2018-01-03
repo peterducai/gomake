@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 )
 
 var makefile = "makefile2go.json"
@@ -32,6 +33,7 @@ type Version struct {
 	Major           string `json:"major"`
 	Minor           string `json:"minor"`
 	Build           string `json:"build"`
+	Commit          string `json:"commit"`
 	IncreaseVersion string `json:"increaseversion"` //increaseversion increment maj,min or build version
 }
 
@@ -45,8 +47,8 @@ type Build struct {
 
 //Dependency hold list of dependencies to download thru go get
 type Dependency struct {
-	Name string `json:"name"`
-	URL  string `json:"url"`
+	Name   string `json:"name"`
+	DepURL string `json:"depurl"`
 }
 
 //Makefile struct that holds whole makefile data
@@ -57,45 +59,56 @@ type Makefile struct {
 	Dependency
 }
 
-// In Go:
+func printTimezones() {
+	t := time.Now()
 
-// // web server
+	location, err := time.LoadLocation("America/New_York")
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println("US/New York  : ", t.In(location))
 
-// type Foo struct {
-//     Number int    `json:"number"`
-//     Title  string `json:"title"`
-// }
+	locberlin, _ := time.LoadLocation("Europe/Berlin")
+	nowberlin := time.Now().In(locberlin)
+	fmt.Println("Europe/Berlin: ", nowberlin)
 
-// foo_marshalled, err := json.Marshal(Foo{Number: 1, Title: "test"})
-// fmt.Fprint(w, string(foo_marshalled)) // write response to ResponseWriter (w)
-// In JavaScript:
-
-// // web call & receive in "data", thru Ajax/ other
-
-// var Foo = JSON.parse(data);
-// console.log("number: " + Foo.number);
-// console.log("title: " + Foo.title);
+	loc, _ := time.LoadLocation("Asia/Shanghai")
+	now := time.Now().In(loc)
+	fmt.Println("Asia/Shanghai: ", now)
+}
 
 func main() {
 
-	//caution : format string is `2006-01-02 15:04:05.000000000`
-	//current := time.Now()
-	//fmt.Println("new build: ", current.Format("20060102150405"))
+	current := time.Now()
 
-	major := 0
-	minor := 1
-	build := "07102017"
+	var mk Makefile
+	mk.About.Name = "mynewproject"
+	mk.Version.Minor = "1"
+	mk.Version.Major = "1"
+	mk.Version.Build = current.Format("20060102150405")
+	mk.Version.Commit = "0"
 
 	fmt.Println("--------------------------------")
-	fmt.Println("- GOMAKE builder and generator -")
-	var version = fmt.Sprintf("%d.%d.%s         -", major, minor, build)
+	fmt.Println("- GOMAKE                       -")
+	fmt.Println("- builder and generator        -")
+	var version = fmt.Sprintf("%s.%s.%s   -", mk.Version.Major, mk.Version.Minor, mk.Version.Build)
 	fmt.Printf("- version %s \n", version)
 	fmt.Println("--------------------------------")
+	fmt.Println("args:")
 
 	processArgs()
 	fmt.Println("-----------------------")
+	printTimezones()
+	fmt.Println("-----------------------")
 	checkMakefileExists()
 
+	//fmt.Printf("%+v", mk)
+
+	data, err := json.Marshal(mk)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(string(data))
 	//buildProgram()
 
 }
@@ -139,14 +152,6 @@ func initProj() {
 	//generate makefile2go.json
 	fmt.Println("--------------------------------")
 
-	mk := Makefile{url: "sjflasjdfsdfj"}
-	data, err := json.Marshal(mk)
-	if err != nil {
-		fmt.Println("Oh no! There was an error:", err)
-		return
-	}
-
-	fmt.Println(string(data))
 }
 
 func loadMakefile() {
