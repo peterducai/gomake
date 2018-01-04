@@ -88,9 +88,10 @@ func printTimezones() {
 
 func main() {
 
-	logger.SetLevel("DEBUG")
+	mc := MicroLogger
 
-	logger.Debug("sdfsadf")
+	mc.Warn("sldjflsjdf")
+	mc.Deprecated("ldskjf")
 
 	current := time.Now()
 	getRunningDir()
