@@ -42,6 +42,7 @@ type Build struct {
 	Name         string `json:"name"`
 	Description  string `json:"description"`
 	Compilerpath string `json:"compilerpath"`
+	Binary       string `json:"binary"`
 	Flags        string `json:"flags"`
 }
 
@@ -55,8 +56,8 @@ type Dependency struct {
 type Makefile struct {
 	About
 	Version
-	Build
-	Dependency
+	Builds       []Build
+	Dependencies []Dependency
 }
 
 func getRunningDir() {
@@ -129,7 +130,7 @@ func main() {
 }
 
 func processArgs() {
-	compilerFlag := flag.String("compiler", "default", "choose compiler version")
+	compilerFlag := flag.String("compilerversion", "default", "choose compiler version")
 	configurationFlag := flag.String("configuration", "release_patch", "choose configuration")
 	//numbPtr := flag.Int("configuration", 42, "an int")
 	//boolPtr := flag.Bool("fork", false, "a bool")
@@ -139,8 +140,8 @@ func processArgs() {
 	fmt.Println("configuration_flag:", *configurationFlag)
 }
 
+//checkMakefileExists check for existence of Gomakefile.yml
 func checkMakefileExists() {
-	//check for existence of Gomakefile.yml
 	if _, err := os.Stat(makefile); !os.IsNotExist(err) {
 		fmt.Println("found makefile...                   OK")
 		loadMakefile()
@@ -150,6 +151,7 @@ func checkMakefileExists() {
 	}
 }
 
+//TODO: design and deploy
 func initProj() {
 	fmt.Println("starting project GENERAtor...")
 

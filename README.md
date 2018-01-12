@@ -9,3 +9,9 @@ use GOMAKE to build GOMAKE with all artifacts and automation
 - inject variables into build
 - automatically increase build version and produce artifacts
 - download dependencies
+
+possible future features:
+
+- insert build metadata into DB
+- obsfucate code
+- produce reports
