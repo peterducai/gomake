@@ -1,5 +1,10 @@
 # gomake
+
 make for go
+
+**Work in progress**
+
+> This software is still being built and is not ready for prime time. Any feedback and help is welcome !
 
 VISION:
 
