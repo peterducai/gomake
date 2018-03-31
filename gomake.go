@@ -14,59 +14,57 @@ import (
 	"time"
 )
 
-var makefile = "makefile2go.json"
+var makefile = "gmk.json"
 
 //About describes software, it's author and so on
-type About struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Homepage    string `json:"homepage"`
-	Repository  string `json:"repository"`
-	Author      string `json:"author"`
-	Email       string `json:"email"`
-	License     string `json:"license"`
-	LicenseURL  string `json:"licenseurl"`
+type MakefileStruct struct {
+	About struct {
+		Name        string `json:"name"`
+		Description string `json:"description"`
+		Homepage    string `json:"homepage"`
+		Repository  string `json:"repository"`
+		Author      string `json:"author"`
+		Email       string `json:"email"`
+		License     string `json:"license"`
+		LicenseURL  string `json:"licenseurl"`
+	}
+
+	//Version describes version and versioning configuration
+	Version struct {
+		Major           string `json:"major"`
+		Minor           string `json:"minor"`
+		Build           string `json:"build"`
+		Commit          string `json:"commit"`
+		IncreaseVersion string `json:"increaseversion"` //increaseversion increment maj,min or build version
+	}
+
+	//Makefile struct that holds whole makefile data
+	Makefile struct {
+		About   string `json:"about"`
+		Version string `json:"version"`
+		Builds  []struct {
+			Name         string `json:"name"`
+			Description  string `json:"description"`
+			Compilerpath string `json:"compilerpath"`
+			Binary       string `json:"binary"`
+			Flags        string `json:"flags"`
+		}
+	}
 }
 
-//Version describes version and versioning configuration
-type Version struct {
-	Major           string `json:"major"`
-	Minor           string `json:"minor"`
-	Build           string `json:"build"`
-	Commit          string `json:"commit"`
-	IncreaseVersion string `json:"increaseversion"` //increaseversion increment maj,min or build version
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
 }
 
-//Build describes build configuration
-type Build struct {
-	Name         string `json:"name"`
-	Description  string `json:"description"`
-	Compilerpath string `json:"compilerpath"`
-	Binary       string `json:"binary"`
-	Flags        string `json:"flags"`
-}
-
-//Dependency hold list of dependencies to download thru go get
-type Dependency struct {
-	Name   string `json:"name"`
-	DepURL string `json:"depurl"`
-}
-
-//Makefile struct that holds whole makefile data
-type Makefile struct {
-	About
-	Version
-	Builds       []Build
-	Dependencies []Dependency
-}
-
-func getRunningDir() {
+func getRunningDir() string {
 	pwd, err := os.Getwd()
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	fmt.Println(pwd)
+	return pwd
 }
 
 func printTimezones() {
@@ -87,6 +85,21 @@ func printTimezones() {
 	fmt.Println("Asia/Shanghai: ", now)
 }
 
+func generateMakefile() {
+	//	m := Message{"Alice", "Hello", 1294706395881547000}
+	//b, err := json.Marshal(m)
+	//b == []byte(`{"Name":"Alice","Body":"Hello","Time":1294706395881547000}`)
+}
+
+func checkMakefile() {
+	var pwd = getRunningDir()
+	if _, err := os.Stat(pwd + "/" + makefile); err == nil {
+		fmt.Println("Found " + pwd + "/" + makefile)
+	} else {
+		fmt.Println("Makefile NOT found. Generating new one")
+	}
+}
+
 func main() {
 
 	// mc := MicroLogger
@@ -95,7 +108,7 @@ func main() {
 	// mc.Deprecated("ldskjf")
 
 	current := time.Now()
-	getRunningDir()
+	checkMakefile()
 
 	var mk Makefile
 	mk.About.Name = "mynewproject"
