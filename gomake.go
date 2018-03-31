@@ -16,7 +16,7 @@ import (
 
 var makefile = "gmk.json"
 
-//About describes software, it's author and so on
+//MakefileStruct describes whole Makefile
 type MakefileStruct struct {
 	About struct {
 		Name        string `json:"name"`
@@ -71,9 +71,7 @@ func printTimezones() {
 	t := time.Now()
 
 	location, err := time.LoadLocation("America/New_York")
-	if err != nil {
-		fmt.Println(err)
-	}
+	check(err)
 	fmt.Println("US/New York  : ", t.In(location))
 
 	locberlin, _ := time.LoadLocation("Europe/Berlin")
@@ -89,28 +87,8 @@ func generateMakefile() {
 	//	m := Message{"Alice", "Hello", 1294706395881547000}
 	//b, err := json.Marshal(m)
 	//b == []byte(`{"Name":"Alice","Body":"Hello","Time":1294706395881547000}`)
-}
-
-func checkMakefile() {
-	var pwd = getRunningDir()
-	if _, err := os.Stat(pwd + "/" + makefile); err == nil {
-		fmt.Println("Found " + pwd + "/" + makefile)
-	} else {
-		fmt.Println("Makefile NOT found. Generating new one")
-	}
-}
-
-func main() {
-
-	// mc := MicroLogger
-
-	// mc.Warn("sldjflsjdf")
-	// mc.Deprecated("ldskjf")
-
 	current := time.Now()
-	checkMakefile()
-
-	var mk Makefile
+	var mk MakefileStruct
 	mk.About.Name = "mynewproject"
 	mk.Version.Minor = "1"
 	mk.Version.Major = "0"
@@ -125,25 +103,35 @@ func main() {
 	fmt.Println("--------------------------------")
 	fmt.Println("args:")
 
+	data, err := json.Marshal(mk)
+	check(err)
+	fmt.Println(string(data))
+}
+
+func checkMakefile() {
+	var pwd = getRunningDir()
+	if _, err := os.Stat(pwd + "/" + makefile); err == nil {
+		fmt.Println("Found " + pwd + "/" + makefile)
+	} else {
+		fmt.Println("Makefile NOT found. Will generate new one")
+	}
+}
+
+func main() {
+
+	checkMakefile()
+
 	processArgs()
 	fmt.Println("-----------------------")
 	printTimezones()
 	fmt.Println("-----------------------")
 	checkMakefileExists()
 
-	//fmt.Printf("%+v", mk)
-
-	data, err := json.Marshal(mk)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(string(data))
-	//buildProgram()
-
 }
 
 func processArgs() {
 	compilerFlag := flag.String("compilerversion", "default", "choose compiler version")
+	masterkeyFlag := flag.String("masterkey", "default", "masterkey")
 	configurationFlag := flag.String("configuration", "release_patch", "choose configuration")
 	//numbPtr := flag.Int("configuration", 42, "an int")
 	//boolPtr := flag.Bool("fork", false, "a bool")
@@ -151,6 +139,7 @@ func processArgs() {
 
 	fmt.Println("compiler:", *compilerFlag)
 	fmt.Println("configuration_flag:", *configurationFlag)
+	fmt.Println("masterkey_flag:", *masterkeyFlag)
 }
 
 //checkMakefileExists check for existence of Gomakefile.yml
