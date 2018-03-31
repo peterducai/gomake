@@ -216,7 +216,7 @@ func test() {
 
 // raiseBuildNum
 func raiseBuildNum() {
-
+	//Version.Build = string(integer(Version.Build) + 1)
 }
 
 //checksumFile will create sha256 checksum of whole file
