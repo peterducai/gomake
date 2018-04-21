@@ -123,6 +123,10 @@ func CheckMakefile() {
 
 func main() {
 
+	curdir, err := os.Getwd()
+	check(err)
+	fmt.Printf("working dir is %s\n", curdir )
+
 	CheckMakefile()
 
 	ProcessArgs()
@@ -138,20 +142,20 @@ func ProcessArgs() {
 	masterkeyFlag := flag.String("masterkey", "default", "masterkey")
 	configurationFlag := flag.String("configuration", "release_patch", "choose configuration")
 	//numbPtr := flag.Int("configuration", 42, "an int")
-	buildandrunFlag := flag.Bool("buildandrun", false, "a bool")
+	//buildandrunFlag := flag.Bool("buildandrun", false, "a bool")
 	flag.Parse()
 
 	fmt.Println("compiler:", *compilerFlag)
 	fmt.Println("configuration:", *configurationFlag)
 	fmt.Println("masterkey:", *masterkeyFlag)
-	fmt.Println("buildandrun:", *buildandrunFlag)
+	//fmt.Println("buildandrun:", *buildandrunFlag)
 }
 
 //checkMakefileExists check for existence of Gomakefile.yml
 func CheckMakefileExists() {
 	if _, err := os.Stat(makefile); !os.IsNotExist(err) {
 		fmt.Println("found makefile...                   OK")
-		LoadMakefile()
+		LoadMakefile(makefile)
 	} else {
 		fmt.Println("makefile NOT FOUND...            ERROR")
 		InitProj()
@@ -160,7 +164,10 @@ func CheckMakefileExists() {
 
 //TODO: design and deploy
 func InitProj() {
+	fmt.Println("")
+	fmt.Println("....................................")
 	fmt.Println("starting project GENERAtor...")
+	fmt.Println("....................................")
 
 	//reading a string
 	reader := bufio.NewReader(os.Stdin)
@@ -174,14 +181,17 @@ func InitProj() {
 	//create dir
 	//cd dir
 	//generate makefile2go.json
+	fmt.Println("makefile generated...         OK")
 	fmt.Println("--------------------------------")
-
+	//LoadMakefile(makefile)
 }
 
-func LoadMakefile() {
+func LoadMakefile(mkf string) {
 	fmt.Println("reading Makefile..")
-	//fmt.Printf("working dir is %s", os.Getwd())
-	inFile, _ := os.Open(makefile)
+	curdir, err := os.Getwd()
+	check(err)
+	fmt.Printf("working dir is ", curdir )
+	inFile, _ := os.Open(mkf)
 	defer inFile.Close()
 	scanner := bufio.NewScanner(inFile)
 	scanner.Split(bufio.ScanLines)
