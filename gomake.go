@@ -12,6 +12,7 @@ import (
 	"os/exec"
 	"strings"
 	"time"
+	"strconv"
 )
 
 var makefile = "gmk.json"
@@ -52,6 +53,8 @@ type MakefileStruct struct {
 	}
 }
 
+var mk MakefileStruct
+
 func check(e error) {
 	if e != nil {
 		panic(e)
@@ -83,12 +86,12 @@ func printTimezones() {
 	fmt.Println("Asia/Shanghai: ", now)
 }
 
-func generateMakefile() {
+func GenerateMakefile() {
 	//	m := Message{"Alice", "Hello", 1294706395881547000}
 	//b, err := json.Marshal(m)
 	//b == []byte(`{"Name":"Alice","Body":"Hello","Time":1294706395881547000}`)
 	current := time.Now()
-	var mk MakefileStruct
+
 	mk.About.Name = "mynewproject"
 	mk.Version.Minor = "1"
 	mk.Version.Major = "0"
@@ -108,53 +111,55 @@ func generateMakefile() {
 	fmt.Println(string(data))
 }
 
-func checkMakefile() {
+func CheckMakefile() {
 	var pwd = getRunningDir()
 	if _, err := os.Stat(pwd + "/" + makefile); err == nil {
 		fmt.Println("Found " + pwd + "/" + makefile)
 	} else {
 		fmt.Println("Makefile NOT found. Will generate new one")
+		GenerateMakefile()
 	}
 }
 
 func main() {
 
-	checkMakefile()
+	CheckMakefile()
 
-	processArgs()
+	ProcessArgs()
 	fmt.Println("-----------------------")
 	printTimezones()
 	fmt.Println("-----------------------")
-	checkMakefileExists()
+	CheckMakefileExists()
 
 }
 
-func processArgs() {
+func ProcessArgs() {
 	compilerFlag := flag.String("compilerversion", "default", "choose compiler version")
 	masterkeyFlag := flag.String("masterkey", "default", "masterkey")
 	configurationFlag := flag.String("configuration", "release_patch", "choose configuration")
 	//numbPtr := flag.Int("configuration", 42, "an int")
-	//boolPtr := flag.Bool("fork", false, "a bool")
+	buildandrunFlag := flag.Bool("buildandrun", false, "a bool")
 	flag.Parse()
 
 	fmt.Println("compiler:", *compilerFlag)
-	fmt.Println("configuration_flag:", *configurationFlag)
-	fmt.Println("masterkey_flag:", *masterkeyFlag)
+	fmt.Println("configuration:", *configurationFlag)
+	fmt.Println("masterkey:", *masterkeyFlag)
+	fmt.Println("buildandrun:", *buildandrunFlag)
 }
 
 //checkMakefileExists check for existence of Gomakefile.yml
-func checkMakefileExists() {
+func CheckMakefileExists() {
 	if _, err := os.Stat(makefile); !os.IsNotExist(err) {
 		fmt.Println("found makefile...                   OK")
-		loadMakefile()
+		LoadMakefile()
 	} else {
 		fmt.Println("makefile NOT FOUND...            ERROR")
-		initProj()
+		InitProj()
 	}
 }
 
 //TODO: design and deploy
-func initProj() {
+func InitProj() {
 	fmt.Println("starting project GENERAtor...")
 
 	//reading a string
@@ -173,7 +178,7 @@ func initProj() {
 
 }
 
-func loadMakefile() {
+func LoadMakefile() {
 	fmt.Println("reading Makefile..")
 	//fmt.Printf("working dir is %s", os.Getwd())
 	inFile, _ := os.Open(makefile)
@@ -198,7 +203,7 @@ func loadMakefile() {
 
 }
 
-func buildProgram() {
+func BuildProgram() {
 	//go build [-o output] [-i] [build flags] [packages]
 	cmd := exec.Command("go", "build", "gomake.go")
 	log.Printf("Running command and waiting for it to finish...")
@@ -207,7 +212,7 @@ func buildProgram() {
 }
 
 // clean binaries
-func clean() {
+func Clean() {
 
 }
 
@@ -216,13 +221,39 @@ func test() {
 
 }
 
-// raiseBuildNum
-func raiseBuildNum() {
-	//Version.Build = string(integer(Version.Build) + 1)
+//VersionType
+const (
+	Major int = iota
+	Minor
+	BuildNumber
+)
+
+// RaiseBuildNum
+func RaiseBuildNum(VersionType int) {
+
+	if VersionType == 1 {
+		i, err := strconv.Atoi(mk.Version.Major)
+		check(err)
+		mk.Version.Major = string(i + 1)
+		fmt.Println("major version number raides")
+	} else if VersionType == 2 {
+		i, err := strconv.Atoi(mk.Version.Minor)
+		check(err)
+		mk.Version.Minor = string(i + 1)
+		fmt.Println("minor version number raised")
+	} else if VersionType == 3 {
+		i, err := strconv.Atoi(mk.Version.Build)
+		check(err)
+		mk.Version.Build = string(i + 1)
+		fmt.Println("build number raised")
+	} else {
+		fmt.Println("raiseBuildNum ERROR")
+	}
+
 }
 
-//checksumFile will create sha256 checksum of whole file
-func checksumFile() {
+//ChecksumFile will create sha256 checksum of whole file
+func ChecksumFile() {
 	f, err := os.Open("file.txt")
 	if err != nil {
 		log.Fatal(err)
@@ -237,8 +268,8 @@ func checksumFile() {
 	fmt.Printf("%x", h.Sum(nil))
 }
 
-//checksumString will create sha256 checksum of given string
-func checksumString(mystr string) {
+//ChecksumString will create sha256 checksum of given string
+func ChecksumString(mystr string) {
 	sum := sha256.Sum256([]byte(mystr))
 	fmt.Printf("%x", sum)
 }
