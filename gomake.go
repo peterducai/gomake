@@ -10,9 +10,9 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 	"time"
-	"strconv"
 )
 
 var makefile = "gmk.json"
@@ -36,7 +36,6 @@ type MakefileStruct struct {
 		Minor           string `json:"minor"`
 		Build           string `json:"build"`
 		Commit          string `json:"commit"`
-		IncreaseVersion string `json:"increaseversion"` //increaseversion increment maj,min or build version
 	}
 
 	//Makefile struct that holds whole makefile data
@@ -125,7 +124,7 @@ func main() {
 
 	curdir, err := os.Getwd()
 	check(err)
-	fmt.Printf("working dir is %s\n", curdir )
+	fmt.Printf("working dir is %s\n", curdir)
 
 	CheckMakefile()
 
@@ -190,7 +189,7 @@ func LoadMakefile(mkf string) {
 	fmt.Println("reading Makefile..")
 	curdir, err := os.Getwd()
 	check(err)
-	fmt.Printf("working dir is ", curdir )
+	fmt.Printf("working dir is ", curdir)
 	inFile, _ := os.Open(mkf)
 	defer inFile.Close()
 	scanner := bufio.NewScanner(inFile)
